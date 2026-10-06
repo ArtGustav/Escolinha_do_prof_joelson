@@ -1,4 +1,3 @@
-const { email } = require('zod');
 const alunoRepository = require('..//repositories/alunoRepository');
 
 //lista pestinhas
@@ -16,7 +15,6 @@ const getAlunos = async (req,res) => {
 //Cria um novo pestinha
 const createAluno = async (req,res) => {
     const {nome,email}=req.body;
-}
 
 // a obrigação dos pestinhas
 if (!nome || !email) {
@@ -31,6 +29,7 @@ if (!nome || !email) {
                 return res.status(400).json({mensagem:'Já tem email com essa peste'});
             }
             return res.status(500).json({mensagem: 'não vou cadastrar essa peste por motivos maiores'});
+        }
 };
 module.exports = {
     getAlunos,
