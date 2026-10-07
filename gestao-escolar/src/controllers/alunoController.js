@@ -18,15 +18,15 @@ const createAluno = async (req,res) => {
 
 // a obrigação dos pestinhas
 if (!nome || !email) {
-    return res.status(400).jason({mensagem:'a pestinha precisa do email, se não nem entra'});
+    return res.status(400).json({mensagem:'Nome e e-mail são obrigatórios.'});
     }
         try {
             const novoAluno = await alunoRepository.create(nome,email);
             return res.status(201).json(novoAluno);
         } catch (error) {
             // veridicar email duplicado da peste ai no postgres
-            if (error.code === '235005'){
-                return res.status(400).json({mensagem:'Já tem email com essa peste'});
+            if (error.code === '23505'){
+                return res.status(409).json({mensagem:'Já existe um aluno cadastrado com esse e-mail.'});
             }
             return res.status(500).json({mensagem: 'não vou cadastrar essa peste por motivos maiores'});
         }

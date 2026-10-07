@@ -30,6 +30,9 @@ const createTurma = async (req,res) => {
         if (!curso){
             return res.status(404).json({mensagem:'Não cabe mais pestes aqui (ta chei de peste aq)'})
         }
+        if (Number(curso.vagas) <= 0) {
+            return res.status(409).json({mensagem:'Este curso não tem vagas disponíveis.'});
+        }
         // cria a matricula na tabela de turmas
         const novaMatricula = await turmaRepository.create(aluno_id,curso_id);
 

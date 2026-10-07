@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f7fb" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>Gestão Escolar</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="/" aria-label="Gestão Escolar, início">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M3.5 9.5 12 4l8.5 5.5L12 15 3.5 9.5Z" />
+              <path d="M7 12v4.2c2.8 2.2 7.2 2.2 10 0V12M20.5 10v6" />
+            </svg>
+          </span>
+          <span class="brand-copy"><strong>Escolinha</strong><small>PAINEL DE GESTÃO</small></span>
+        </a>
+
+        <p class="nav-label">MENU PRINCIPAL</p>
+        <nav class="main-nav" aria-label="Menu principal">
+          <button class="nav-item is-active" type="button" data-view="dashboard">
+            <span class="nav-icon" aria-hidden="true">⌂</span> Visão geral
+          </button>
+          <button class="nav-item" type="button" data-view="alunos">
+            <span class="nav-icon" aria-hidden="true">♙</span> Alunos
+            <span class="nav-count" id="nav-alunos-count">—</span>
+          </button>
+          <button class="nav-item" type="button" data-view="cursos">
+            <span class="nav-icon" aria-hidden="true">▤</span> Cursos
+            <span class="nav-count" id="nav-cursos-count">—</span>
+          </button>
+          <button class="nav-item" type="button" data-view="turmas">
+            <span class="nav-icon" aria-hidden="true">▦</span> Matrículas
+            <span class="nav-count" id="nav-turmas-count">—</span>
+          </button>
+          <button class="nav-item" type="button" data-view="cadastros">
+            <span class="nav-icon" aria-hidden="true">＋</span> Cadastros
+          </button>
+        </nav>
+
+        <div class="sidebar-bottom">
+          <div class="connection-card">
+            <span class="connection-dot" id="connection-dot"></span>
+            <span><strong id="connection-label">Conectando...</strong><small>Banco de dados</small></span>
+          </div>
+          <p class="sidebar-footnote">GESTÃO ESCOLAR <span>•</span> PAINEL</p>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div class="breadcrumbs"><span>Escolinha</span><span class="crumb-divider">/</span><strong id="breadcrumb-current">Visão geral</strong></div>
+          <div class="topbar-actions">
+            <span class="today-label" id="today-label"></span>
+            <button class="icon-button refresh-button" id="refresh-button" type="button" aria-label="Atualizar dados" title="Atualizar dados">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M20 7v5h-5M4 17v-5h5" />
+                <path d="M5.5 9a7 7 0 0 1 11.8-2L20 12M4 12l2.7 5a7 7 0 0 0 11.8-2" />
+              </svg>
+            </button>
+            <div class="avatar" aria-label="Administrador">A</div>
+          </div>
+        </header>
+
+        <div class="page-wrap">
+          <section class="page-heading">
+            <div>
+              <p class="eyebrow">ACOMPANHAMENTO ESCOLAR</p>
+              <h1 id="page-title">Visão geral</h1>
+              <p class="page-subtitle" id="page-subtitle">Acompanhe os dados da sua escola em um só lugar.</p>
+            </div>
+            <div class="live-indicator"><span></span> Dados em tempo real</div>
+          </section>
+
+          <div class="error-banner" id="error-banner" role="alert" hidden></div>
+          <div class="loading-banner" id="loading-banner" role="status" hidden>Atualizando dados do banco...</div>
+
+          <section class="registration-view" id="registration-view" aria-label="Cadastrar registros" hidden>
+            <article class="registration-card">
+              <div class="registration-card-heading">
+                <span class="registration-icon students-icon" aria-hidden="true">♙</span>
+                <div><h2>Novo aluno</h2><p>Cadastre os dados do aluno.</p></div>
+              </div>
+              <form class="registration-form" id="student-form">
+                <label>Nome completo<input name="nome" type="text" maxlength="100" autocomplete="name" placeholder="Ex.: Maria da Silva" required /></label>
+                <label>E-mail<input name="email" type="email" maxlength="100" autocomplete="email" placeholder="aluno@exemplo.com" required /></label>
+                <button class="primary-button" type="submit">Cadastrar aluno</button>
+                <p class="form-feedback" id="student-feedback" role="status" aria-live="polite"></p>
+              </form>
+            </article>
+
+            <article class="registration-card">
+              <div class="registration-card-heading">
+                <span class="registration-icon courses-icon" aria-hidden="true">▤</span>
+                <div><h2>Novo curso</h2><p>Defina o nome e a quantidade inicial de vagas.</p></div>
+              </div>
+              <form class="registration-form" id="course-form">
+                <label>Nome do curso<input name="nome" type="text" maxlength="100" placeholder="Ex.: Matemática básica" required /></label>
+                <label>Vagas<input name="vagas" type="number" min="0" step="1" value="30" required /></label>
+                <button class="primary-button" type="submit">Cadastrar curso</button>
+                <p class="form-feedback" id="course-feedback" role="status" aria-live="polite"></p>
+              </form>
+            </article>
+
+            <article class="registration-card enrollment-card">
+              <div class="registration-card-heading">
+                <span class="registration-icon classes-icon" aria-hidden="true">▦</span>
+                <div><h2>Nova matrícula</h2><p>Vincule um aluno a um curso com vagas disponíveis.</p></div>
+              </div>
+              <form class="registration-form enrollment-form" id="enrollment-form">
+                <label>Aluno<select name="aluno_id" required><option value="">Selecione um aluno</option></select></label>
+                <label>Curso<select name="curso_id" required><option value="">Selecione um curso</option></select></label>
+                <button class="primary-button" type="submit">Registrar matrícula</button>
+                <p class="form-feedback" id="enrollment-feedback" role="status" aria-live="polite"></p>
+              </form>
+            </article>
+          </section>
+
+          <section class="stats-grid" id="stats-grid" aria-label="Resumo da escola">
+            <article class="stat-card">
+              <div class="stat-top"><span class="stat-icon students-icon">♙</span><span class="stat-caption">CADASTRADOS</span></div>
+              <p class="stat-value" id="stat-alunos">—</p><p class="stat-label">Alunos</p>
+              <span class="stat-foot">Total de alunos no banco</span>
+            </article>
+            <article class="stat-card">
+              <div class="stat-top"><span class="stat-icon courses-icon">▤</span><span class="stat-caption">DISPONÍVEIS</span></div>
+              <p class="stat-value" id="stat-cursos">—</p><p class="stat-label">Cursos</p>
+              <span class="stat-foot">Cursos cadastrados</span>
+            </article>
+            <article class="stat-card">
+              <div class="stat-top"><span class="stat-icon classes-icon">▦</span><span class="stat-caption">REGISTRADAS</span></div>
+              <p class="stat-value" id="stat-turmas">—</p><p class="stat-label">Matrículas</p>
+              <span class="stat-foot">Alunos vinculados a cursos</span>
+            </article>
+            <article class="stat-card">
+              <div class="stat-top"><span class="stat-icon seats-icon">◷</span><span class="stat-caption">RESTANTES</span></div>
+              <p class="stat-value" id="stat-vagas">—</p><p class="stat-label">Vagas disponíveis</p>
+              <span class="stat-foot">Somatório das vagas dos cursos</span>
+            </article>
+          </section>
+
+          <section class="data-card" aria-labelledby="table-title">
+            <div class="data-card-header">
+              <div>
+                <h2 id="table-title">Alunos recentes</h2>
+                <p id="table-description">Alunos cadastrados no banco de dados</p>
+              </div>
+              <label class="search-box">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3" /><path d="m15.5 15.5 4 4" /></svg>
+                <input id="search-input" type="search" placeholder="Buscar..." autocomplete="off" aria-label="Buscar registros" />
+              </label>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead id="table-head"></thead>
+                <tbody id="table-body"></tbody>
+              </table>
+              <div class="empty-state" id="empty-state" hidden>
+                <span aria-hidden="true">⌕</span>
+                <strong>Nenhum registro encontrado</strong>
+                <p>Tente buscar por outro termo.</p>
+              </div>
+            </div>
+            <div class="table-footer"><span id="table-count">Carregando registros...</span><span class="footer-live"><span></span> Sincronizado com o banco</span></div>
+          </section>
+
+          <footer class="page-footer">Escolinha <span>•</span> Painel de gestão escolar</footer>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

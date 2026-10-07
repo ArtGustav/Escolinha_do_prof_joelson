@@ -2,13 +2,13 @@ const pool = require('../config/db');
 
 //busca todos os alunos cadastrados
 const findAll = async()=>{
-    const result = await poolquery("SELECT * FROM alunos order by id asc");
+    const result = await pool.query("SELECT * FROM alunos ORDER BY id ASC");
     return result.rows
 };
 
 //busca um aluno pelo id
 const findById = async (id) => {
-    const result = await pool.query('SELECT * FROM alunos WHERE id = &1');
+    const result = await pool.query('SELECT * FROM alunos WHERE id = $1', [id]);
     return result.rows[0];
 };
 

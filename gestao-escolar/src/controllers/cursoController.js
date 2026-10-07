@@ -28,12 +28,14 @@ const getCursoId = async (req,res) => {
 //Criando um novo curso ae boy
 const createCurso = async (req,res) => {
     const {nome, vagas} = req.body;
-    // tem que colocar o nome do curso da peste e quantas pestes cabem no curso
-    if (nome){
-        return req.status(400).json({mensagem:'COLOQUE O NOME DO CURSOOOO'})
+    if (!nome || !nome.trim()) {
+        return res.status(400).json({mensagem:'O nome do curso é obrigatório.'});
+    }
+    if (vagas !== undefined && (!Number.isInteger(Number(vagas)) || Number(vagas) < 0)) {
+        return res.status(400).json({mensagem:'A quantidade de vagas deve ser um número inteiro igual ou maior que zero.'});
     }
     try{
-        const novoCurso = await cursoRepository.create(nome, vagas);
+        const novoCurso = await cursoRepository.create(nome.trim(), vagas);
         return res.status(201).json(novoCurso);
     }catch(error){
         return res.status(500).json({mensagem:'Nosso sistema não quer colocar seu curso felizmente muehehehe'})
