@@ -623,3 +623,104 @@ td { font-size: 14px; }
   .stat-caption { font-size: 8px; }
   .table-footer { font-size: 9px; }
 }
+
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.row-action-button,
+.secondary-button {
+  min-height: 30px;
+  padding: 0 10px;
+  border: 1px solid #e5e7ef;
+  border-radius: 7px;
+  background: #fff;
+  color: #5d55b5;
+  cursor: pointer;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.row-action-button:hover,
+.secondary-button:hover {
+  border-color: #c9c4f1;
+  background: #faf9ff;
+}
+
+.row-action-button.is-danger {
+  color: #b33e48;
+}
+
+.row-action-button.is-danger:hover {
+  border-color: #f0c8cb;
+  background: #fff8f8;
+}
+
+.row-action-button:focus-visible,
+.secondary-button:focus-visible {
+  outline: 3px solid rgb(101 88 211 / 22%);
+  outline-offset: 2px;
+}
+
+.enrollment-dialog {
+  width: min(520px, calc(100% - 32px));
+  max-width: none;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  box-shadow: 0 24px 80px rgb(24 27 44 / 24%);
+}
+
+.enrollment-dialog::backdrop {
+  background: rgb(24 27 44 / 42%);
+  backdrop-filter: blur(3px);
+}
+
+.enrollment-dialog-card {
+  padding: 23px;
+}
+
+.dialog-actions {
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 3px;
+}
+
+.dialog-actions .primary-button {
+  margin-top: 0;
+}
+
+.dialog-actions {
+  align-items: center;
+}
+
+.enrollment-edit-form .form-feedback {
+  grid-column: 1 / -1;
+}
+
+.record-dialog .dialog-actions,
+.record-dialog .form-feedback {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 430px) {
+  .dialog-actions,
+  .enrollment-edit-form .form-feedback {
+    grid-column: auto;
+  }
+
+  .row-actions {
+    gap: 4px;
+  }
+
+  .row-action-button {
+    padding: 0 7px;
+    font-size: 10px;
+  }
+}

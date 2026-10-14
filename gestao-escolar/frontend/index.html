@@ -122,6 +122,60 @@
             </article>
           </section>
 
+          <dialog class="enrollment-dialog" id="enrollment-dialog" aria-labelledby="edit-enrollment-title">
+            <article class="registration-card enrollment-dialog-card">
+              <div class="registration-card-heading">
+                <span class="registration-icon classes-icon" aria-hidden="true">▦</span>
+                <div><h2 id="edit-enrollment-title">Editar matrícula</h2><p>Altere o aluno ou o curso desta matrícula.</p></div>
+              </div>
+              <form class="registration-form enrollment-form" id="enrollment-edit-form">
+                <label>Aluno<select name="aluno_id" required><option value="">Selecione um aluno</option></select></label>
+                <label>Curso<select name="curso_id" required><option value="">Selecione um curso</option></select></label>
+                <div class="dialog-actions">
+                  <button class="secondary-button" id="cancel-edit-button" type="button">Cancelar</button>
+                  <button class="primary-button" type="submit">Salvar alterações</button>
+                </div>
+                <p class="form-feedback" id="edit-enrollment-feedback" role="status" aria-live="polite"></p>
+              </form>
+            </article>
+          </dialog>
+
+          <dialog class="enrollment-dialog record-dialog" id="student-dialog" aria-labelledby="edit-student-title">
+            <article class="registration-card enrollment-dialog-card">
+              <div class="registration-card-heading">
+                <span class="registration-icon students-icon" aria-hidden="true">♙</span>
+                <div><h2 id="edit-student-title">Editar aluno</h2><p>Atualize o nome e o e-mail do aluno.</p></div>
+              </div>
+              <form class="registration-form" id="student-edit-form">
+                <label>Nome completo<input name="nome" type="text" maxlength="100" autocomplete="name" required /></label>
+                <label>E-mail<input name="email" type="email" maxlength="100" autocomplete="email" required /></label>
+                <div class="dialog-actions">
+                  <button class="secondary-button" type="button" data-close-dialog="student-dialog">Cancelar</button>
+                  <button class="primary-button" type="submit">Salvar alterações</button>
+                </div>
+                <p class="form-feedback" id="edit-student-feedback" role="status" aria-live="polite"></p>
+              </form>
+            </article>
+          </dialog>
+
+          <dialog class="enrollment-dialog record-dialog" id="course-dialog" aria-labelledby="edit-course-title">
+            <article class="registration-card enrollment-dialog-card">
+              <div class="registration-card-heading">
+                <span class="registration-icon courses-icon" aria-hidden="true">▤</span>
+                <div><h2 id="edit-course-title">Editar curso</h2><p>Atualize o nome e as vagas disponíveis do curso.</p></div>
+              </div>
+              <form class="registration-form" id="course-edit-form">
+                <label>Nome do curso<input name="nome" type="text" maxlength="100" required /></label>
+                <label>Vagas disponíveis<input name="vagas" type="number" min="0" step="1" required /></label>
+                <div class="dialog-actions">
+                  <button class="secondary-button" type="button" data-close-dialog="course-dialog">Cancelar</button>
+                  <button class="primary-button" type="submit">Salvar alterações</button>
+                </div>
+                <p class="form-feedback" id="edit-course-feedback" role="status" aria-live="polite"></p>
+              </form>
+            </article>
+          </dialog>
+
           <section class="stats-grid" id="stats-grid" aria-label="Resumo da escola">
             <article class="stat-card">
               <div class="stat-top"><span class="stat-icon students-icon">♙</span><span class="stat-caption">CADASTRADOS</span></div>

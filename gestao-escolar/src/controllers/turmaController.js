@@ -1,8 +1,13 @@
 const turmaRepository = require('../repositories/turmaRepository');
-const cursoRepository = require('../repositories/cursoRepository');
 const alunoRepository = require('../repositories/alunoRepository');
 
-//liata todas as turmas das pestana(s 
+// Valida se o ID informado e um numero inteiro positivo
+const isValidId = (id) => {
+    const isNumericInput = typeof id === 'number' || (typeof id === 'string' && id.trim() !== '');
+    return isNumericInput && Number.isSafeInteger(Number(id)) && Number(id) > 0;
+};
+
+// Lista todas as matriculas
 const getTurmas = async (req, res) => {
     try {
         const turmas = await turmaRepository.findAll();
@@ -12,44 +17,112 @@ const getTurmas = async (req, res) => {
     }
 };
 
-// Cria uma nova matrícula para a peste
-const createTurma = async (req,res) => {
-    const {aluno_id, curso_id} = req.body
-    if (!aluno_id || !curso_id){
-        return res.status(400).json({mensagem:'Campos da pestinha_id e cursinho_id é pra fazer!!!!!'})
+// Busca uma matricula pelo ID
+const getTurmaById = async (req, res) => {
+    const { id } = req.params;
+    if (!isValidId(id)) {
+        return res.status(400).json({ mensagem: 'O ID da matricula deve ser um numero inteiro positivo.' });
     }
+
     try {
-        // primeiro verificamos se a peste existe
-        const aluno = await alunoRepository.findById(aluno_id);
-        if (!aluno){
-            return res.status(404).json({mensagem:'Peste não encontrada'})
+        const turma = await turmaRepository.findById(Number(id));
+        if (!turma) {
+            return res.status(404).json({ mensagem: 'Matricula nao encontrada.' });
         }
 
-        // busca o curso pra ver quastas pestes tem e quantas ainda cabem
-        const curso = await cursoRepository.findById(curso_id);
-        if (!curso){
-            return res.status(404).json({mensagem:'Não cabe mais pestes aqui (ta chei de peste aq)'})
-        }
-        if (Number(curso.vagas) <= 0) {
-            return res.status(409).json({mensagem:'Este curso não tem vagas disponíveis.'});
-        }
-        // cria a matricula na tabela de turmas
-        const novaMatricula = await turmaRepository.create(aluno_id,curso_id);
+        return res.status(200).json(turma);
+    } catch (error) {
+        return res.status(500).json({ mensagem: 'Erro do sistema ao buscar a matricula.' });
+    }
+};
 
-        //decrementa 1 vaga de curso
-        await cursoRepository.decrementarVaga(curso_id);
+// Cria uma nova matricula
+const createTurma = async (req, res) => {
+    const { aluno_id, curso_id } = req.body;
+    if (!isValidId(aluno_id) || !isValidId(curso_id)) {
+        return res.status(400).json({ mensagem: 'Informe IDs validos para o aluno e o curso.' });
+    }
 
+    try {
+        const aluno = await alunoRepository.findById(Number(aluno_id));
+        if (!aluno) {
+            return res.status(404).json({ mensagem: 'Aluno nao encontrado.' });
+        }
+
+        const novaMatricula = await turmaRepository.create(Number(aluno_id), Number(curso_id));
         return res.status(201).json({
-            mensagem: 'peste matriculada com susseso felizmente muahahahh',
+            mensagem: 'Matricula criada com sucesso.',
             matricula: novaMatricula
         });
+    } catch (error) {
+        if (error.code === 'COURSE_NOT_FOUND') {
+            return res.status(404).json({ mensagem: 'Curso nao encontrado.' });
+        }
+        if (error.code === 'NO_AVAILABLE_SEATS') {
+            return res.status(409).json({ mensagem: 'Este curso nao tem vagas disponiveis.' });
+        }
+        return res.status(500).json({ mensagem: 'Erro do sistema ao criar a matricula.' });
+    }
+};
 
-    } catch (error){
-        return res.status(500).json({mensagem:'Erro do sistema ao matricular a peste'})
+// Atualiza uma matricula existente
+const updateTurma = async (req, res) => {
+    const { id } = req.params;
+    const { aluno_id, curso_id } = req.body;
+    if (!isValidId(id) || !isValidId(aluno_id) || !isValidId(curso_id)) {
+        return res.status(400).json({ mensagem: 'Informe IDs validos para a matricula, o aluno e o curso.' });
+    }
+
+    try {
+        const aluno = await alunoRepository.findById(Number(aluno_id));
+        if (!aluno) {
+            return res.status(404).json({ mensagem: 'Aluno nao encontrado.' });
+        }
+
+        const matricula = await turmaRepository.update(Number(id), Number(aluno_id), Number(curso_id));
+        if (!matricula) {
+            return res.status(404).json({ mensagem: 'Matricula nao encontrada.' });
+        }
+        return res.status(200).json({
+            mensagem: 'Matricula atualizada com sucesso.',
+            matricula
+        });
+    } catch (error) {
+        if (error.code === 'COURSE_NOT_FOUND') {
+            return res.status(404).json({ mensagem: 'Curso nao encontrado.' });
+        }
+        if (error.code === 'NO_AVAILABLE_SEATS') {
+            return res.status(409).json({ mensagem: 'Este curso nao tem vagas disponiveis.' });
+        }
+        return res.status(500).json({ mensagem: 'Erro do sistema ao atualizar a matricula.' });
+    }
+};
+
+// Exclui uma matricula e devolve a vaga ao curso
+const deleteTurma = async (req, res) => {
+    const { id } = req.params;
+    if (!isValidId(id)) {
+        return res.status(400).json({ mensagem: 'O ID da matricula deve ser um numero inteiro positivo.' });
+    }
+
+    try {
+        const matricula = await turmaRepository.remove(Number(id));
+        if (!matricula) {
+            return res.status(404).json({ mensagem: 'Matricula nao encontrada.' });
+        }
+        return res.status(200).json({
+            mensagem: 'Matricula excluida com sucesso.',
+            matricula
+        });
+    } catch (error) {
+        return res.status(500).json({ mensagem: 'Erro do sistema ao excluir a matricula.' });
     }
 };
 
 module.exports = {
     getTurmas,
-    createTurma
-}
+    getTurmaById,
+    createTurma,
+    updateTurma,
+    deleteTurma
+};
